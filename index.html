@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpustakaan SMKN 1 Banyuwangi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">📚</div>
+        <h2>Perpustakaan Digital<br>SMKN 1 Banyuwangi</h2>
+        <p>Sistem Informasi Perpustakaan</p>
+    </div>
+    <nav class="nav-menu">
+        <div class="nav-item active" data-page="dashboard">
+            <span class="icon">🏠</span> Dashboard
+        </div>
+        <div class="nav-item" data-page="daftar-hadir">
+            <span class="icon">📋</span> Daftar Hadir
+        </div>
+        <div class="nav-item" data-page="data-buku">
+            <span class="icon">📖</span> Data Buku
+        </div>
+        <div class="nav-item" data-page="peminjaman">
+            <span class="icon">🔄</span> Peminjaman Buku
+        </div>
+        <div class="nav-item" data-page="pengembalian">
+            <span class="icon">📥</span> Pengembalian
+        </div>
+        <div class="nav-item" data-page="riwayat">
+            <span class="icon">📊</span> Riwayat
+        </div>
+    </nav>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" id="hamburger">☰</button>
+            <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="datetime" id="datetime"></div>
+    </header>
+
+    <div class="page-content">
+
+        <!-- ===== DASHBOARD ===== -->
+        <div class="page active" id="page-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue">📖</div>
+                    <div class="stat-info">
+                        <h3 id="stat-buku">0</h3>
+                        <p>Total Buku</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-green">👥</div>
+                    <div class="stat-info">
+                        <h3 id="stat-hadir">0</h3>
+                        <p>Hadir Hari Ini</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-orange">📤</div>
+                    <div class="stat-info">
+                        <h3 id="stat-pinjam">0</h3>
+                        <p>Sedang Dipinjam</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-purple">✅</div>
+                    <div class="stat-info">
+                        <h3 id="stat-total">0</h3>
+                        <p>Total Transaksi</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:20px;">
+                <div class="card">
+                    <div class="card-header"><h3>📋 Daftar Hadir Hari Ini</h3></div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>Nama</th><th>Kelas</th><th>Jam Masuk</th></tr></thead>
+                                <tbody id="dashboard-hadir"></tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="empty-hadir-dash" style="display:none;">
+                            <div class="icon">📋</div><p>Belum ada pengunjung hari ini</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><h3>🔄 Peminjaman Aktif</h3></div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead><tr><th>Nama</th><th>Buku</th><th>Tgl Pinjam</th></tr></thead>
+                                <tbody id="dashboard-pinjam"></tbody>
+                            </table>
+                        </div>
+                        <div class="empty-state" id="empty-pinjam-dash" style="display:none;">
+                            <div class="icon">📖</div><p>Tidak ada peminjaman aktif</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DAFTAR HADIR ===== -->
+        <div class="page" id="page-daftar-hadir">
+            <div class="card">
+                <div class="card-header"><h3>📝 Absen Masuk Perpustakaan</h3></div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nama Lengkap *</label>
+                            <input type="text" id="hadir-nama" placeholder="Masukkan nama lengkap" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Kelas / Asal *</label>
+                            <input type="text" id="hadir-kelas" placeholder="Contoh: XII RPL 1">
+                        </div>
+                        <div class="form-group">
+                            <label>Keperluan</label>
+                            <select id="hadir-keperluan">
+                                <option value="Membaca">Membaca</option>
+                                <option value="Meminjam Buku">Meminjam Buku</option>
+                                <option value="Mengerjakan Tugas">Mengerjakan Tugas</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="absenMasuk()">📥 Absen Masuk</button>
+                        <button class="btn btn-success" onclick="absenKeluar()">📤 Absen Keluar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>📋 Riwayat Daftar Hari Ini</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-hadir" placeholder="Cari nama..." oninput="renderDaftarHadir()">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Nama</th><th>Kelas</th><th>Keperluan</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Status</th><th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-hadir"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="empty-hadir" style="display:none;">
+                        <div class="icon">📋</div><p>Belum ada data kehadiran</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DATA BUKU ===== -->
+        <div class="page" id="page-data-buku">
+            <div class="card">
+                <div class="card-header"><h3>➕ Tambah Buku Baru</h3></div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Judul Buku *</label><input type="text" id="buku-judul" placeholder="Judul buku"></div>
+                        <div class="form-group"><label>Pengarang *</label><input type="text" id="buku-pengarang" placeholder="Nama pengarang"></div>
+                        <div class="form-group"><label>Penerbit</label><input type="text" id="buku-penerbit" placeholder="Nama penerbit"></div>
+                        <div class="form-group"><label>Tahun Terbit</label><input type="number" id="buku-tahun" placeholder="2024" min="1900" max="2026"></div>
+                        <div class="form-group"><label>ISBN</label><input type="text" id="buku-isbn" placeholder="978-xxx-xxx"></div>
+                        <div class="form-group"><label>Kategori</label>
+                            <select id="buku-kategori">
+                                <option value="Pelajaran">Pelajaran</option><option value="Fiksi">Fiksi</option>
+                                <option value="Non-Fiksi">Non-Fiksi</option><option value="Referensi">Referensi</option>
+                                <option value="Komik">Komik</option><option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Jumlah Stok *</label><input type="number" id="buku-stok" placeholder="0" min="0"></div>
+                        <div class="form-group"><label>Lokasi Rak</label><input type="text" id="buku-rak" placeholder="Rak A1"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="tambahBuku()">💾 Simpan Buku</button>
+                        <button class="btn btn-warning" onclick="resetFormBuku()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>📚 Koleksi Buku</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-buku" placeholder="Cari judul/pengarang..." oninput="renderDataBuku()">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Judul</th><th>Pengarang</th><th>Penerbit</th><th>Tahun</th><th>Kategori</th><th>Stok</th><th>Rak</th><th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-buku"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="empty-buku" style="display:none;">
+                        <div class="icon">📚</div><p>Belum ada data buku</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PEMINJAMAN ===== -->
+        <div class="page" id="page-peminjaman">
+            <div class="card">
+                <div class="card-header"><h3>📤 Form Peminjaman Buku</h3></div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nama Peminjam *</label><input type="text" id="pinjam-nama" placeholder="Nama lengkap peminjam" autocomplete="off"></div>
+                        <div class="form-group"><label>Kelas / Asal *</label><input type="text" id="pinjam-kelas" placeholder="Contoh: XI TKJ 2"></div>
+                        <div class="form-group"><label>No. Telepon</label><input type="text" id="pinjam-telp" placeholder="08xxxxxxxxxx"></div>
+                        <div class="form-group"><label>Pilih Buku *</label><select id="pinjam-buku"><option value="">-- Pilih Buku --</option></select></div>
+                        <div class="form-group"><label>Tanggal Pinjam</label><input type="date" id="pinjam-tgl"></div>
+                        <div class="form-group"><label>Batas Pengembalian</label><input type="date" id="pinjam-batas"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="pinjamBuku()">📤 Proses Peminjaman</button>
+                        <button class="btn btn-warning" onclick="resetFormPinjam()">🔄 Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>📋 Daftar Peminjaman Aktif</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-pinjam" placeholder="Cari nama..." oninput="renderPeminjamanAktif()">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th><th>Nama</th><th>Kelas</th><th>Buku</th><th>Tgl Pinjam</th><th>Batas Kembali</th><th>Status</th><th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-pinjam"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="empty-pinjam" style="display:none;">
+                        <div class="icon">📖</div><p>Tidak ada peminjaman aktif</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PENGEMBALIAN ===== -->
+        <div class="page" id="page-pengembalian">
+            <div class="card">
+                <div class="card-header"><h3>📥 Form Pengembalian Buku</h3></div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group"><label>Pilih Peminjaman *</label><select id="kembali-id" onchange="isiDataPengembalian()"><option value="">-- Pilih Peminjaman --</option></select></div>
+                        <div class="form-group"><label>Nama Peminjam</label><input type="text" id="kembali-nama" readonly style="background:#f5f5f5;"></div>
+                        <div class="form-group"><label>Judul Buku</label><input type="text" id="kembali-buku" readonly style="background:#f5f5f5;"></div>
+                        <div class="form-group"><label>Tanggal Kembali</label><input type="date" id="kembali-tgl"></div>
+                    </div>
+                    <div class="form-group" style="margin-top:15px;">
+                        <label>Keterangan</label>
+                        <textarea id="kembali-ket" rows="2" placeholder="Kondisi buku, catatan tambahan..."></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="kembalikanBuku()">✅ Proses Pengembalian</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== RIWAYAT ===== -->
+        <div class="page" id="page-riwayat">
+            <div class="card">
+                <div class="card-header">
+                    <h3>📊 Riwayat Semua Transaksi</h3>
+                    <div class="search-bar">
+                        <input type="text" id="search-riwayat" placeholder="Cari..." oninput="renderRiwayat()">
+                        <button class="btn btn-sm btn-danger" onclick="hapusSemuaRiwayat()">🗑️ Hapus Semua</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Tanggal</th><th>Jenis</th><th>Nama</th><th>Detail</th><th>Keterangan</th></tr>
+                            </thead>
+                            <tbody id="tabel-riwayat"></tbody>
+                        </table>
+                    </div>
+                    <div class="empty-state" id="empty-riwayat" style="display:none;">
+                        <div class="icon">📊</div><p>Belum ada riwayat transaksi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ===== MODAL EDIT BUKU ===== -->
+<div class="modal-overlay" id="modal-edit-buku">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>✏️ Edit Data Buku</h3>
+            <button class="modal-close" onclick="tutupModal('modal-edit-buku')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-buku-index">
+            <div class="form-grid">
+                <div class="form-group"><label>Judul Buku</label><input type="text" id="edit-buku-judul"></div>
+                <div class="form-group"><label>Pengarang</label><input type="text" id="edit-buku-pengarang"></div>
+                <div class="form-group"><label>Penerbit</label><input type="text" id="edit-buku-penerbit"></div>
+                <div class="form-group"><label>Tahun Terbit</label><input type="number" id="edit-buku-tahun"></div>
+                <div class="form-group"><label>ISBN</label><input type="text" id="edit-buku-isbn"></div>
+                <div class="form-group"><label>Kategori</label>
+                    <select id="edit-buku-kategori">
+                        <option value="Pelajaran">Pelajaran</option><option value="Fiksi">Fiksi</option>
+                        <option value="Non-Fiksi">Non-Fiksi</option><option value="Referensi">Referensi</option>
+                        <option value="Komik">Komik</option><option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Stok</label><input type="number" id="edit-buku-stok" min="0"></div>
+                <div class="form-group"><label>Lokasi Rak</label><input type="text" id="edit-buku-rak"></div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="simpanEditBuku()">💾 Simpan</button>
+                <button class="btn btn-danger" onclick="tutupModal('modal-edit-buku')">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
